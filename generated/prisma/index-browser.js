@@ -168,7 +168,15 @@ exports.Prisma.ClientScalarFieldEnum = {
   adresseDepart: 'adresseDepart',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  userId: 'userId'
+  userId: 'userId',
+  statsId: 'statsId'
+};
+
+exports.Prisma.ClientStatsScalarFieldEnum = {
+  id: 'id',
+  totalPoints: 'totalPoints',
+  totalMaps: 'totalMaps',
+  totalItineraries: 'totalItineraries'
 };
 
 exports.Prisma.SortOrder = {
@@ -192,7 +200,8 @@ exports.Prisma.ModelName = {
   PasswordReset: 'PasswordReset',
   Session: 'Session',
   Subscription: 'Subscription',
-  Client: 'Client'
+  Client: 'Client',
+  ClientStats: 'ClientStats'
 };
 
 /**

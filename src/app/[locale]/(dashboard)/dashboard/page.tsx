@@ -1,10 +1,14 @@
 import React from 'react'
+import AdminDashboard from './admit/page'
+
 
 
 
 const page = () => {
   return (
-    <div>page</div>
+    <div>
+      <AdminDashboard  />
+    </div>
   )
 }
 

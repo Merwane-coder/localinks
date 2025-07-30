@@ -77,5 +77,18 @@ model Client {
   user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId Int // C'est la clé étrangère
 
+  // Relation : pour statistiques
+  stats   ClientStats? @relation(fields: [statsId], references: [id])
+  statsId Int?         @unique
+
   @@unique([userId, nomEntreprise])
+}
+
+model ClientStats {
+  id               Int @id @default(autoincrement())
+  totalPoints      Int @default(0)
+  totalMaps        Int @default(0)
+  totalItineraries Int @default(0)
+
+  client Client? @relation
 }

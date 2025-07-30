@@ -60,8 +60,19 @@ CREATE TABLE "public"."Client" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "userId" INTEGER NOT NULL,
+    "statsId" INTEGER,
 
     CONSTRAINT "Client_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "public"."ClientStats" (
+    "id" SERIAL NOT NULL,
+    "totalPoints" INTEGER NOT NULL DEFAULT 0,
+    "totalMaps" INTEGER NOT NULL DEFAULT 0,
+    "totalItineraries" INTEGER NOT NULL DEFAULT 0,
+
+    CONSTRAINT "ClientStats_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -80,6 +91,9 @@ CREATE UNIQUE INDEX "Subscription_stripeSubscriptionId_key" ON "public"."Subscri
 CREATE INDEX "Subscription_userId_idx" ON "public"."Subscription"("userId");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Client_statsId_key" ON "public"."Client"("statsId");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Client_userId_nomEntreprise_key" ON "public"."Client"("userId", "nomEntreprise");
 
 -- AddForeignKey
@@ -93,3 +107,6 @@ ALTER TABLE "public"."Subscription" ADD CONSTRAINT "Subscription_userId_fkey" FO
 
 -- AddForeignKey
 ALTER TABLE "public"."Client" ADD CONSTRAINT "Client_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "public"."Client" ADD CONSTRAINT "Client_statsId_fkey" FOREIGN KEY ("statsId") REFERENCES "public"."ClientStats"("id") ON DELETE SET NULL ON UPDATE CASCADE;
