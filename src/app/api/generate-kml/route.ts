@@ -17,6 +17,7 @@ interface KMLPoint {
 interface KMLRequestData {
     nomEntreprise: string;
     urlEntreprise: string;
+    urlBusiness: string;
     telEntreprise: string;
     motsCles: string;
     adresseDepart: string;
@@ -214,16 +215,20 @@ export async function POST(request: NextRequest) {
                 motsCles: data.motsCles,
                 adresseDepart: data.adresseDepart,
                 updatedAt: new Date(),
+                // Mise à jour des statistiques si elles existent déjà
+                
             },
             create: {
                 userId: userId,
                 nomEntreprise: data.nomEntreprise,
                 urlEntreprise: data.urlEntreprise,
-                urlMyBusiness: "",
+                urlMyBusiness: data.urlBusiness || "",
                 telEntreprise: data.telEntreprise,
                 motsCles: data.motsCles,
                 adresseDepart: data.adresseDepart,
-            }
+                
+            },
+            
         });
 
         // 1. Géocoder l'adresse de départ
@@ -247,6 +252,9 @@ export async function POST(request: NextRequest) {
         const kmlString = await generateKMLString(data, center, points, circleRadii);
         
         const fileName = `carte_seo_${data.nomEntreprise.replace(/\s+/g, '_').toLowerCase()}.kml`;
+
+        
+        
 
         return new Response(kmlString, {
             status: 200,
