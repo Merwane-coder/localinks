@@ -7,7 +7,6 @@ export default function KMLGeneratorPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
   
-  // Utilisez un seul état formData pour tous les champs
   const [formData, setFormData] = useState({
     nomEntreprise: '',
     urlEntreprise: '',
@@ -24,10 +23,8 @@ export default function KMLGeneratorPage() {
   const [error, setError] = useState<string | null>(null);
   const [showGuideModal, setShowGuideModal] = useState(false);
 
-  // Effet pour le pré-remplissage
   useEffect(() => {
     const loadClientData = () => {
-      // 1. Vérifiez d'abord sessionStorage
       const savedData = sessionStorage.getItem('currentClientData');
       if (savedData) {
         try {
@@ -60,7 +57,7 @@ export default function KMLGeneratorPage() {
       const response = await fetch("/api/generate-kml", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData), // Utilisez formData ici
+        body: JSON.stringify(formData),
       });
 
       if (!response.ok) {
@@ -90,7 +87,6 @@ export default function KMLGeneratorPage() {
     }
   };
 
-  // Fonction pour gérer les changements de tous les champs
   const handleChange = (field: string, value: string | number) => {
     setFormData(prev => ({
       ...prev,
@@ -99,74 +95,48 @@ export default function KMLGeneratorPage() {
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 flex flex-col">
-      {/* Header Branding */}
-      <header className="w-full py-8 flex items-center justify-center">
-        <div className="flex flex-col items-center gap-3">
-          <span className="w-20 h-20 flex items-center justify-center rounded-full bg-gradient-to-tr from-indigo-600 to-blue-600 shadow-lg">
-            <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v18m9-9H3m15.364-6.364a9 9 0 11-12.728 0" />
-            </svg>
-          </span>
-          <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
-            KML Generator Pro
-          </h1>
-          <p className="text-base md:text-lg text-gray-600 font-medium max-w-md text-center">
-            Générez des fichiers KML optimisés pour booster votre SEO local en quelques clics
-          </p>
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <header className="bg-white shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+          <h1 className="text-xl font-bold text-gray-900">Générateur KML Premium</h1>
+          <button
+            onClick={() => setShowGuideModal(true)}
+            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          >
+            Guide d'utilisation
+          </button>
         </div>
       </header>
 
-      {/* Main layout */}
-      <div className="flex-1 flex flex-col items-center justify-center gap-8 px-4 pb-12">
-        {/* Info button */}
-        <button
-          onClick={() => setShowGuideModal(true)}
-          className="md:hidden fixed bottom-6 right-6 z-10 w-14 h-14 rounded-full bg-blue-600 shadow-lg flex items-center justify-center text-white hover:bg-blue-700 transition-colors"
-        >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-        </button>
-
-        {/* Main Card */}
-        <div className="w-full max-w-2xl mx-auto bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
-          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-4 text-white text-center">
-            <div className="flex items-center justify-between">
-              <div className="flex-1 text-left">
-                <button
-                  onClick={() => setShowGuideModal(true)}
-                  className="hidden md:flex items-center gap-1 text-sm hover:underline"
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  Voir le guide
-                </button>
-              </div>
-              <div className="flex-1">
-                <h2 className="text-xl font-bold">Générateur KML Premium</h2>
-                <p className="text-sm opacity-90">Remplissez le formulaire pour créer votre fichier</p>
-              </div>
-              <div className="flex-1"></div>
-            </div>
+      {/* Main content */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="bg-white shadow overflow-hidden rounded-lg">
+          <div className="px-4 py-5 sm:px-6 bg-gradient-to-r from-blue-600 to-indigo-600">
+            <h2 className="text-lg leading-6 font-medium text-white">
+              Formulaire de génération KML
+            </h2>
+            <p className="mt-1 text-sm text-blue-100">
+              Remplissez tous les champs requis pour générer votre fichier KML
+            </p>
           </div>
-
-          <form onSubmit={handleSubmit} className="p-6 md:p-8 space-y-8">
+          
+          <form onSubmit={handleSubmit} className="px-4 py-5 sm:p-6 space-y-8">
             {/* Section Entreprise */}
             <section className="space-y-6">
-              <h2 className="flex items-center text-xl font-bold text-gray-800 mb-2 gap-3">
-                <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-blue-100 text-blue-600">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+              <div className="flex items-center">
+                <div className="flex-shrink-0 bg-blue-500 rounded-md p-2">
+                  <svg className="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                   </svg>
-                </span>
-                <span>Informations de l'entreprise</span>
-              </h2>
+                </div>
+                <h3 className="ml-3 text-lg leading-6 font-medium text-gray-900">
+                  Informations de l'entreprise
+                </h3>
+              </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                {/* Tous les champs utilisent maintenant formData et handleChange */}
-                <div className="space-y-1">
+              <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+                <div className="sm:col-span-3">
                   <label htmlFor="nom_entreprise" className="block text-sm font-medium text-gray-700">
                     Nom de l'entreprise *
                   </label>
@@ -175,13 +145,12 @@ export default function KMLGeneratorPage() {
                     id="nom_entreprise"
                     value={formData.nomEntreprise}
                     onChange={(e) => handleChange('nomEntreprise', e.target.value)}
-                    placeholder="Ex: Plomberie Dupont"
-                    className="block w-full rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 px-4 py-2.5 transition-all"
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                     required
                   />
                 </div>
 
-                <div className="space-y-1">
+                <div className="sm:col-span-3">
                   <label htmlFor="url_entreprise" className="block text-sm font-medium text-gray-700">
                     Site web *
                   </label>
@@ -190,13 +159,12 @@ export default function KMLGeneratorPage() {
                     id="url_entreprise"
                     value={formData.urlEntreprise}
                     onChange={(e) => handleChange('urlEntreprise', e.target.value)}
-                    placeholder="Ex: https://www.plomberie-dupont.fr"
-                    className="block w-full rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 px-4 py-2.5 transition-all"
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                     required
                   />
                 </div>
 
-                <div className="space-y-1">
+                <div className="sm:col-span-3">
                   <label htmlFor="url_mybusiness" className="block text-sm font-medium text-gray-700">
                     URL Google MyBusiness *
                   </label>
@@ -205,13 +173,12 @@ export default function KMLGeneratorPage() {
                     id="url_mybusiness"
                     value={formData.urlMyBusiness}
                     onChange={(e) => handleChange('urlMyBusiness', e.target.value)}
-                    placeholder="Ex: https://g.co/jfjf/bjedbbd"
-                    className="block w-full rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 px-4 py-2.5 transition-all"
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                     required
                   />
                 </div>
 
-                <div className="space-y-1">
+                <div className="sm:col-span-3">
                   <label htmlFor="tel_entreprise" className="block text-sm font-medium text-gray-700">
                     Téléphone *
                   </label>
@@ -220,13 +187,12 @@ export default function KMLGeneratorPage() {
                     id="tel_entreprise"
                     value={formData.telEntreprise}
                     onChange={(e) => handleChange('telEntreprise', e.target.value)}
-                    placeholder="Ex: 01 23 45 67 89"
-                    className="block w-full rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 px-4 py-2.5 transition-all"
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                     required
                   />
                 </div>
 
-                <div className="space-y-1">
+                <div className="sm:col-span-6">
                   <label htmlFor="adresse_depart" className="block text-sm font-medium text-gray-700">
                     Adresse de référence *
                   </label>
@@ -235,43 +201,43 @@ export default function KMLGeneratorPage() {
                     id="adresse_depart"
                     value={formData.adresseDepart}
                     onChange={(e) => handleChange('adresseDepart', e.target.value)}
-                    placeholder="Ex: 10 Rue de Paris, 75001 Paris"
-                    className="block w-full rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 px-4 py-2.5 transition-all"
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                     required
                   />
                 </div>
-              </div>
 
-              <div className="space-y-1">
-                <label htmlFor="mots_cles" className="block text-sm font-medium text-gray-700">
-                  Mots-clés SEO * <span className="text-xs text-gray-500">(séparés par des point-virgules)</span>
-                </label>
-                <textarea
-                  id="mots_cles"
-                  rows={3}
-                  value={formData.motsCles}
-                  onChange={(e) => handleChange('motsCles', e.target.value)}
-                  placeholder="Ex: plombier paris; dépannage plomberie; chauffagiste 75"
-                  className="block w-full rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 px-4 py-2.5 transition-all"
-                  required
-                />
+                <div className="sm:col-span-6">
+                  <label htmlFor="mots_cles" className="block text-sm font-medium text-gray-700">
+                    Mots-clés SEO * <span className="text-gray-500">(séparés par des point-virgules)</span>
+                  </label>
+                  <textarea
+                    id="mots_cles"
+                    rows={3}
+                    value={formData.motsCles}
+                    onChange={(e) => handleChange('motsCles', e.target.value)}
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                    required
+                  />
+                </div>
               </div>
             </section>
 
             {/* Section Paramètres */}
             <section className="space-y-6">
-              <h2 className="flex items-center text-xl font-bold text-gray-800 mb-2 gap-3">
-                <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-indigo-100 text-indigo-600">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              <div className="flex items-center">
+                <div className="flex-shrink-0 bg-indigo-500 rounded-md p-2">
+                  <svg className="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
-                </span>
-                <span>Paramètres avancés</span>
-              </h2>
+                </div>
+                <h3 className="ml-3 text-lg leading-6 font-medium text-gray-900">
+                  Paramètres avancés
+                </h3>
+              </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                <div className="space-y-1">
+              <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-3">
+                <div>
                   <label htmlFor="nombre_points" className="block text-sm font-medium text-gray-700">
                     Points de localisation
                   </label>
@@ -282,13 +248,13 @@ export default function KMLGeneratorPage() {
                     onChange={(e) => handleChange('nombrePoints', Number(e.target.value))}
                     min="1"
                     max="500"
-                    className="block w-full rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 px-4 py-2.5 transition-all"
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                     required
                   />
-                  <p className="text-xs text-gray-500">Entre 1 et 500 points</p>
+                  <p className="mt-2 text-sm text-gray-500">Entre 1 et 500 points</p>
                 </div>
 
-                <div className="space-y-1">
+                <div>
                   <label htmlFor="nombre_cercles" className="block text-sm font-medium text-gray-700">
                     Zones de couverture
                   </label>
@@ -299,13 +265,13 @@ export default function KMLGeneratorPage() {
                     onChange={(e) => handleChange('nombreCercles', Number(e.target.value))}
                     min="1"
                     max="20"
-                    className="block w-full rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 px-4 py-2.5 transition-all"
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                     required
                   />
-                  <p className="text-xs text-gray-500">Entre 1 et 20 cercles</p>
+                  <p className="mt-2 text-sm text-gray-500">Entre 1 et 20 cercles</p>
                 </div>
 
-                <div className="space-y-1">
+                <div>
                   <label htmlFor="nombre_itineraires" className="block text-sm font-medium text-gray-700">
                     Itinéraires
                   </label>
@@ -316,124 +282,115 @@ export default function KMLGeneratorPage() {
                     onChange={(e) => handleChange('nombreItineraires', Number(e.target.value))}
                     min="0"
                     max="50"
-                    className="block w-full rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 px-4 py-2.5 transition-all"
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                     required
                   />
-                  <p className="text-xs text-gray-500">Entre 0 et 50 itinéraires</p>
+                  <p className="mt-2 text-sm text-gray-500">Entre 0 et 50 itinéraires</p>
                 </div>
               </div>
             </section>
 
-            {/* Submit et messages */}
-            <div className="pt-4">
-              <button
-                type="submit"
-                disabled={isLoading}
-                className={`w-full py-3.5 px-6 rounded-xl shadow-lg text-white font-semibold text-lg tracking-wide focus:outline-none focus:ring-2 focus:ring-offset-2 transition-all
-                ${
-                  isLoading
-                    ? "bg-gray-400 cursor-not-allowed"
-                    : "bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 focus:ring-blue-300"
-                }`}
-              >
-                {isLoading ? (
-                  <span className="flex items-center justify-center gap-3">
-                    <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    Génération en cours...
-                  </span>
-                ) : (
-                  <span className="flex items-center justify-center gap-2">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                    </svg>
-                    Générer mon fichier KML
-                  </span>
-                )}
-              </button>
-
-              {isLoading && (
-                <div className="w-full mt-3">
-                  <div className="relative h-1.5 rounded-full bg-gray-200 overflow-hidden">
-                    <div className="absolute top-0 left-0 h-full bg-gradient-to-r from-blue-400 to-indigo-400 rounded-full animate-pulse w-2/3"></div>
-                  </div>
-                </div>
-              )}
+            {/* Submit section */}
+            <div className="pt-5">
+              <div className="flex justify-end">
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className={`ml-3 inline-flex justify-center cursor-pointer py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${isLoading ? 'opacity-75 cursor-not-allowed' : ''}`}
+                >
+                  {isLoading ? (
+                    <>
+                      <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Génération en cours...
+                    </>
+                  ) : (
+                    <>
+                      <svg className="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                      </svg>
+                      Générer mon fichier KML
+                    </>
+                  )}
+                </button>
+              </div>
 
               {error && (
-                <div className="mt-4 p-3 bg-red-50 text-red-700 rounded-lg text-sm w-full text-center border border-red-200 flex items-start gap-2">
-                  <svg className="w-4 h-4 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <span>{error}</span>
+                <div className="mt-4 rounded-md bg-red-50 p-4">
+                  <div className="flex">
+                    <div className="flex-shrink-0">
+                      <svg className="h-5 w-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                    <div className="ml-3">
+                      <h3 className="text-sm font-medium text-red-800">Erreur</h3>
+                      <div className="mt-2 text-sm text-red-700">
+                        <p>{error}</p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
           </form>
         </div>
-      </div>
+      </main>
 
       {/* Guide Modal */}
       {showGuideModal && (
-        <div className="fixed inset-0 z-50 overflow-y-auto">
-          <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-            {/* Background overlay */}
-            <div
-              className="fixed inset-0 transition-opacity"
-              aria-hidden="true"
-              onClick={() => setShowGuideModal(false)}
-            >
+        <div className="fixed z-10 inset-0 overflow-y-auto">
+          <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div className="fixed inset-0 transition-opacity" aria-hidden="true">
               <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
             </div>
 
-            {/* Modal container */}
-            <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-              <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                <div className="sm:flex sm:items-start">
-                  <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
-                    <div className="flex justify-between items-center mb-4">
-                      <h3 className="text-lg leading-6 font-medium text-gray-900">
-                        Guide d'utilisation
-                      </h3>
-                      <button
-                        type="button"
-                        className="text-gray-400 hover:text-gray-500 focus:outline-none"
-                        onClick={() => setShowGuideModal(false)}
-                      >
-                        <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                      </button>
-                    </div>
-                    <div className="mt-2">
-                      <ul className="space-y-4 text-gray-600 text-sm">
-                        <li className="flex items-start gap-3">
-                          <span className="mt-1 inline-flex items-center justify-center w-6 h-6 rounded-full bg-blue-100 text-blue-600 text-xs font-bold flex-shrink-0">1</span>
-                          <span>Renseignez les informations de votre entreprise (nom, site web, téléphone et adresse de référence). Ces informations seront utilisées dans le fichier KML généré.</span>
-                        </li>
-                        <li className="flex items-start gap-3">
-                          <span className="mt-1 inline-flex items-center justify-center w-6 h-6 rounded-full bg-blue-100 text-blue-600 text-xs font-bold flex-shrink-0">2</span>
-                          <span>Ajoutez vos mots-clés SEO principaux, séparés par des point-virgules. Ces mots-clés seront utilisés pour optimiser les balises dans le fichier KML.</span>
-                        </li>
-                        <li className="flex items-start gap-3">
-                          <span className="mt-1 inline-flex items-center justify-center w-6 h-6 rounded-full bg-blue-100 text-blue-600 text-xs font-bold flex-shrink-0">3</span>
-                          <span>Configurez les paramètres de génération : nombre de points de localisation, zones de couverture (cercles) et itinéraires à générer.</span>
-                        </li>
-                        <li className="flex items-start gap-3">
-                          <span className="mt-1 inline-flex items-center justify-center w-6 h-6 rounded-full bg-blue-100 text-blue-600 text-xs font-bold flex-shrink-0">4</span>
-                          <span>Cliquez sur "Générer mon fichier KML" pour créer et télécharger votre fichier. Vous pourrez ensuite l'importer dans Google My Business et Google Maps.</span>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
+            <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+            <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
+              <div>
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg leading-6 font-medium text-gray-900">
+                    Guide d'utilisation
+                  </h3>
+                  <button
+                    type="button"
+                    className="bg-white rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                    onClick={() => setShowGuideModal(false)}
+                  >
+                    <span className="sr-only">Close</span>
+                    <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+                <div className="mt-4">
+                  <ul className="space-y-4 text-sm text-gray-500">
+                    <li className="flex items-start">
+                      <span className="flex-shrink-0 h-5 w-5 text-blue-500">1.</span>
+                      <span className="ml-2">Renseignez les informations de votre entreprise (nom, site web, téléphone et adresse de référence). Ces informations seront utilisées dans le fichier KML généré.</span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="flex-shrink-0 h-5 w-5 text-blue-500">2.</span>
+                      <span className="ml-2">Ajoutez vos mots-clés SEO principaux, séparés par des point-virgules. Ces mots-clés seront utilisés pour optimiser les balises dans le fichier KML.</span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="flex-shrink-0 h-5 w-5 text-blue-500">3.</span>
+                      <span className="ml-2">Configurez les paramètres de génération : nombre de points de localisation, zones de couverture (cercles) et itinéraires à générer.</span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="flex-shrink-0 h-5 w-5 text-blue-500">4.</span>
+                      <span className="ml-2">Cliquez sur "Générer mon fichier KML" pour créer et télécharger votre fichier. Vous pourrez ensuite l'importer dans Google My Business et Google Maps.</span>
+                    </li>
+                  </ul>
                 </div>
               </div>
-              <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+              <div className="mt-5 sm:mt-6">
                 <button
                   type="button"
-                  className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"
+                  className="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm"
                   onClick={() => setShowGuideModal(false)}
                 >
                   J'ai compris
@@ -443,13 +400,9 @@ export default function KMLGeneratorPage() {
           </div>
         </div>
       )}
-    </main>
+    </div>
   );
 }
-
-
-
-
 
 
 

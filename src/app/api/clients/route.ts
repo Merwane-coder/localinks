@@ -26,6 +26,9 @@ export async function GET(request: Request) {
         id: true,
         nomEntreprise: true,
         adresseDepart: true,
+        urlEntreprise: true,
+        telEntreprise: true,
+        motsCles: true,
         createdAt: true
       },
       orderBy: { createdAt: 'desc' }

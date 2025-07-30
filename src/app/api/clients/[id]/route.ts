@@ -59,3 +59,55 @@ export async function GET(
   }
 }
 
+// supprimer  un client
+export async function DELETE(
+  request: NextRequest,
+  context: { params: Promise<{ id: string }> }
+) {
+  try {
+    const cookies = parse(request.headers.get('cookie') || '');
+    const token = cookies.session;
+
+    if (!token) {
+      return NextResponse.json({ error: "Authentification requise" }, { status: 401 });
+    }
+
+    const sessionResult = await validateSessionToken(token);
+    if (!sessionResult.user?.id) {
+      return NextResponse.json({ error: "Session invalide" }, { status: 401 });
+    }
+
+    const { id } = await context.params;
+
+    const clientId = Number(id);
+    if (isNaN(clientId)) {
+      return NextResponse.json({ error: "ID client invalide" }, { status: 400 });
+    }
+
+    // Vérifie si le client existe bien pour cet utilisateur
+    const existingClient = await prisma.client.findUnique({
+      where: {
+        id: clientId,
+        userId: sessionResult.user.id,
+      }
+    });
+
+    if (!existingClient) {
+      return NextResponse.json({ error: "Client introuvable" }, { status: 404 });
+    }
+
+    // Suppression
+    await prisma.client.delete({
+      where: {
+        id: clientId,
+      }
+    });
+
+    return NextResponse.json({ message: "Client supprimé" });
+
+  } catch (error) {
+    console.error('Erreur DELETE /api/clients/[id]:', error);
+    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
+  }
+}
+
