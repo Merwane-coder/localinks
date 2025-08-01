@@ -17,7 +17,7 @@ interface KMLPoint {
 interface KMLRequestData {
     nomEntreprise: string;
     urlEntreprise: string;
-    urlBusiness: string;
+    urlMyBusiness: string;
     telEntreprise: string;
     motsCles: string;
     adresseDepart: string;
@@ -222,7 +222,7 @@ export async function POST(request: NextRequest) {
                 userId: userId,
                 nomEntreprise: data.nomEntreprise,
                 urlEntreprise: data.urlEntreprise,
-                urlMyBusiness: data.urlBusiness || "",
+                urlMyBusiness: data.urlMyBusiness || "",
                 telEntreprise: data.telEntreprise,
                 motsCles: data.motsCles,
                 adresseDepart: data.adresseDepart,

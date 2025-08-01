@@ -3,6 +3,7 @@
 import { useState, FormEvent, useEffect } from "react";
 import { useSearchParams, useRouter } from 'next/navigation';
 import ImportModal from '../components/ImportModal';
+import GuideModal from "../components/GuideModal";
 
 export default function KMLGeneratorPage() {
   const searchParams = useSearchParams();
@@ -128,7 +129,7 @@ export default function KMLGeneratorPage() {
           <h1 className="text-xl font-bold text-gray-900">Générateur KML Premium</h1>
           <button
             onClick={() => setShowGuideModal(true)}
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            className="inline-flex cursor-pointer items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
           >
             Guide d'utilisation
           </button>
@@ -273,11 +274,11 @@ export default function KMLGeneratorPage() {
                     value={formData.nombrePoints}
                     onChange={(e) => handleChange('nombrePoints', Number(e.target.value))}
                     min="1"
-                    max="500"
+                    max="3000"
                     className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                     required
                   />
-                  <p className="mt-2 text-sm text-gray-500">Entre 1 et 500 points</p>
+                  <p className="mt-2 text-sm text-gray-500"></p>
                 </div>
 
                 <div>
@@ -290,7 +291,7 @@ export default function KMLGeneratorPage() {
                     value={formData.nombreCercles}
                     onChange={(e) => handleChange('nombreCercles', Number(e.target.value))}
                     min="1"
-                    max="20"
+                    
                     className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                     required
                   />
@@ -364,68 +365,8 @@ export default function KMLGeneratorPage() {
           </form>
         </div>
       </main>
-
       {/* Guide Modal */}
-      {showGuideModal && (
-        <div className="fixed z-10 inset-0 overflow-y-auto">
-          <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-            <div className="fixed inset-0 transition-opacity" aria-hidden="true">
-              <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
-            </div>
-
-            <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-
-            <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
-              <div>
-                <div className="flex items-center justify-between">
-                  <h3 className="text-lg leading-6 font-medium text-gray-900">
-                    Guide d'utilisation
-                  </h3>
-                  <button
-                    type="button"
-                    className="bg-white rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                    onClick={() => setShowGuideModal(false)}
-                  >
-                    <span className="sr-only">Close</span>
-                    <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                </div>
-                <div className="mt-4">
-                  <ul className="space-y-4 text-sm text-gray-500">
-                    <li className="flex items-start">
-                      <span className="flex-shrink-0 h-5 w-5 text-blue-500">1.</span>
-                      <span className="ml-2">Renseignez les informations de votre entreprise (nom, site web, téléphone et adresse de référence). Ces informations seront utilisées dans le fichier KML généré.</span>
-                    </li>
-                    <li className="flex items-start">
-                      <span className="flex-shrink-0 h-5 w-5 text-blue-500">2.</span>
-                      <span className="ml-2">Ajoutez vos mots-clés SEO principaux, séparés par des point-virgules. Ces mots-clés seront utilisés pour optimiser les balises dans le fichier KML.</span>
-                    </li>
-                    <li className="flex items-start">
-                      <span className="flex-shrink-0 h-5 w-5 text-blue-500">3.</span>
-                      <span className="ml-2">Configurez les paramètres de génération : nombre de points de localisation, zones de couverture (cercles) et itinéraires à générer.</span>
-                    </li>
-                    <li className="flex items-start">
-                      <span className="flex-shrink-0 h-5 w-5 text-blue-500">4.</span>
-                      <span className="ml-2">Cliquez sur "Générer mon fichier KML" pour créer et télécharger votre fichier. Vous pourrez ensuite l'importer dans Google My Business et Google Maps.</span>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-              <div className="mt-5 sm:mt-6">
-                <button
-                  type="button"
-                  className="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm"
-                  onClick={() => setShowGuideModal(false)}
-                >
-                  J'ai compris
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      <GuideModal isOpen={showGuideModal} onClose={setShowGuideModal} />
 
       {/* Import Modal */}
       
