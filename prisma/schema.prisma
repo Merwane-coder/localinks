@@ -1,0 +1,76 @@
+// schema.prisma
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id                Int               @id @default(autoincrement())
+  email             String            @unique
+  passwordHash      String
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  emailVerified     DateTime?
+  role              String            @default("USER")
+  sessions          Session[]
+  passwordResets    PasswordReset[]
+  stripeCustomerId  String?           @unique
+  subscriptionLevel String?           @default("FREE")
+  subscriptions     Subscription[]
+  clients           Client[]
+}
+
+model PasswordReset {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+  used      Boolean  @default(false)
+}
+
+model Session {
+  id        String   @id
+  userId    Int?
+  expiresAt DateTime
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Subscription {
+  id                String     @id @default(uuid())
+  userId            Int
+  user              User       @relation(fields: [userId], references: [id])
+  stripeSubscriptionId String  @unique
+  stripePriceId     String
+  status            String     // active, canceled, incomplete, etc.
+  currentPeriodEnd  DateTime
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@index([userId])
+}
+
+model Client {
+  id                Int      @id @default(autoincrement())
+  nomEntreprise     String
+  urlEntreprise     String
+  urlMyBusiness     String
+  telEntreprise     String
+  motsCles          String
+  adresseDepart     String
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Relation: Ce champ lie le client à un utilisateur spécifique
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId            Int      // C'est la clé étrangère
+  @@unique([userId, nomEntreprise])
+
+}
