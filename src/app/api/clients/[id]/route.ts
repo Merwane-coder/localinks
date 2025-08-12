@@ -1,22 +1,13 @@
-import { NextResponse, NextRequest } from 'next/server'; // Importez NextRequest si vous l'utilisez
+import { NextRequest, NextResponse } from 'next/server';
+import { parse } from 'cookie';
 import { prisma } from '@/db/prisma';
 import { validateSessionToken } from '@/actions/auth';
-import { parse } from 'cookie';
-
-// Définissez une interface pour les paramètres de la route
-// Cela rend le typage du deuxième argument plus clair et réutilisable.
-interface RouteContext {
-  params: {
-    id: string; // 'id' correspond au nom de votre dossier dynamique [id]
-  };
-}
 
 export async function GET(
-  request: NextRequest, // Il est recommandé d'utiliser NextRequest si vous accédez aux cookies, headers, etc.
-  context: RouteContext // Utilisez l'interface définie pour typer explicitement le contexte
+  request: NextRequest,
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
-    // Authentification
     const cookies = parse(request.headers.get('cookie') || '');
     const token = cookies.session;
 
@@ -29,23 +20,21 @@ export async function GET(
       return NextResponse.json({ error: "Session invalide" }, { status: 401 });
     }
 
-    const { id } = context.params; // Accédez aux paramètres via l'objet context
+    const { id } = await context.params;
 
-    // Validation de l'ID
-    if (!id) { // Le check `if (!params?.id)` devient `if (!id)`
+    if (!id) {
       return NextResponse.json({ error: "ID client manquant" }, { status: 400 });
     }
 
-    const clientId = Number(id); // Utilisez 'id' directement
+    const clientId = Number(id);
     if (isNaN(clientId)) {
       return NextResponse.json({ error: "ID client invalide" }, { status: 400 });
     }
 
-    // Récupération du client
     const client = await prisma.client.findUnique({
       where: {
         id: clientId,
-        userId: sessionResult.user.id
+        userId: sessionResult.user.id,
       },
       select: {
         id: true,
@@ -55,8 +44,8 @@ export async function GET(
         motsCles: true,
         adresseDepart: true,
         urlMyBusiness: true,
-        createdAt: true
-      }
+        createdAt: true,
+      },
     });
 
     if (!client) {
@@ -64,12 +53,60 @@ export async function GET(
     }
 
     return NextResponse.json(client);
-
   } catch (error) {
     console.error('Erreur GET /api/clients/[id]:', error);
-    return NextResponse.json(
-      { error: "Erreur interne du serveur" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Erreur interne du serveur" }, { status: 500 });
+  }
+}
+
+// supprimer  un client
+export async function DELETE(
+  request: NextRequest,
+  context: { params: Promise<{ id: string }> }
+) {
+  try {
+    const cookies = parse(request.headers.get('cookie') || '');
+    const token = cookies.session;
+
+    if (!token) {
+      return NextResponse.json({ error: "Authentification requise" }, { status: 401 });
+    }
+
+    const sessionResult = await validateSessionToken(token);
+    if (!sessionResult.user?.id) {
+      return NextResponse.json({ error: "Session invalide" }, { status: 401 });
+    }
+
+    const { id } = await context.params;
+
+    const clientId = Number(id);
+    if (isNaN(clientId)) {
+      return NextResponse.json({ error: "ID client invalide" }, { status: 400 });
+    }
+
+    // Vérifie si le client existe bien pour cet utilisateur
+    const existingClient = await prisma.client.findUnique({
+      where: {
+        id: clientId,
+        userId: sessionResult.user.id,
+      }
+    });
+
+    if (!existingClient) {
+      return NextResponse.json({ error: "Client introuvable" }, { status: 404 });
+    }
+
+    // Suppression
+    await prisma.client.delete({
+      where: {
+        id: clientId,
+      }
+    });
+
+    return NextResponse.json({ message: "Client supprimé" });
+
+  } catch (error) {
+    console.error('Erreur DELETE /api/clients/[id]:', error);
+    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
   }
 }
