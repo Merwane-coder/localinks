@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 160" role="img" aria-labelledby="title desc">
+  <title id="title">Localink logo</title>
+  <desc id="desc">Map pin with link/infinity symbol and the word Localink</desc>
+
+  <!-- GRADIENTS -->
+  <defs>
+    <linearGradient id="pinGrad" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0%" stop-color="#1DA1F2"></stop>
+      <stop offset="100%" stop-color="#12D8B5"></stop>
+    </linearGradient>
+  </defs>
+
+  <!-- PIN (Google-Maps style) -->
+  <!-- sized ~120x150 inside the left area -->
+  <g transform="translate(12,8)">
+    <!-- drop / pin -->
+    <path d="M84,0
+             C47,0,17,29,17,66
+             c0,35,26,63,67,114
+             c41,-51,67,-79,67,-114
+             C151,29,121,0,84,0Z" fill="url(#pinGrad)"></path>
+
+    <!-- inner white outline circle for subtle depth -->
+    <circle cx="84" cy="66" r="42" fill="rgba(255,255,255,0.08)"></circle>
+
+    <!-- LINK / INFINITY mark inside pin (stroke only) -->
+    <!-- Drawn with round caps/joins so it feels like a continuous link -->
+    <path d="M60,56
+             c8,-8,24,-8,32,0
+             c6,6,6,15,0,21
+             l-11,11
+             m-10,10
+             l-11,11
+             c-6,6-15,6-21,0
+             c-8,-8-8,-24,0,-32
+             l11,-11" fill="none" stroke="#FFFFFF" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"></path>
+  </g>
+
+  <!-- WORDMARK -->
+  <!-- Uses a safe stack; you can swap to your brand font in CSS if needed -->
+  <g transform="translate(180,23)">
+    <text x="0" y="98" font-family="Inter, Poppins, Segoe UI, Roboto, Helvetica, Arial, sans-serif" font-weight="800" font-style="italic" font-size="96" letter-spacing="0.5" fill="#0B3E72">Localink</text>
+  </g>
+</svg>
